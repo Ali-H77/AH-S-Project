@@ -1,0 +1,89 @@
+import pandas as pd
+import sqlite3
+connect database in Python
+{
+df = pd.read_csv('WA_Fn-UseC_-HR-Employee-Attrition.csv')
+conn = sqlite3.connect('mydb.db')
+df.to_sql('Employees', conn, if_exists='replace', index=False)
+}
+
+q1/
+Python:
+total_employees_pandas = len(df)
+print(f"Total employees: {total_employees_pandas}")
+SQL:
+s1= pd.read_sql_query("select count (*) FROM Employees;",conn)
+s1
+
+q2/
+Python:
+department_counts = df.groupby('Department').size()
+print("Employee count by Department:")
+print(department_counts)
+SQL:
+s2 = pd.read_sql_query("SELECT Department, COUNT(EmployeeNumber) AS " \
+"employee_count FROM Employees GROUP BY Department;",conn)
+s2
+
+q3/
+Python:
+avg_income = df.groupby('JobRole')['MonthlyIncome'].mean().reset_index()
+print("Average monthly income by job role:")
+avg_income['MonthlyIncome'] = avg_income['MonthlyIncome'].astype(int)
+print(avg_income)
+SQL:
+s3 = pd.read_sql_query("SELECT JobRole, AVG(MonthlyIncome) AS average_monthly_income " \
+"FROM employees GROUP BY JobRole;",conn)
+s3
+
+q4/
+Python:
+top_5_employees = df.sort_values(by='PerformanceRating', ascending=False).head(5)
+print("Top 5 employees by performance rating:")
+print(top_5_employees[['PerformanceRating']])
+SQL:
+s4 = pd.read_sql_query("SELECT EmployeeNumber,PerformanceRating, JobRole FROM Employees " \
+"ORDER BY PerformanceRating DESC LIMIT 5;",conn)
+s4
+
+q5/
+Python:
+grouped = df.groupby('Department')['PerformanceRating'].mean()
+highest_dept = grouped.idxmax()
+highest_value = grouped.max()
+print(f"{highest_dept} has the highest average PerformanceRate: {highest_value:.2f}")
+SQL:
+s5 = pd.read_sql_query("SELECT Department, ROUND(AVG(PerformanceRating),2) AS avg_rating " \
+"FROM Employees GROUP BY Department ORDER " \
+"BY avg_rating DESC LIMIT 1;",conn)
+s5
+
+q6/
+Python:
+Age_AVG = df.groupby('Department')['Age'].mean().reset_index()
+print("Average Age:")
+Age_AVG['Age'] = Age_AVG['Age'].astype(int)
+print(Age_AVG)
+SQL:
+s6 = pd.read_sql_query("SELECT Department, ROUND(AVG(JobInvolvement),2) AS AVG_Job_Involvement " \
+"FROM Employees GROUP BY Department ORDER BY AVG_Job_Involvement;",conn)
+s6
+
+q7/
+Python:
+AVG_JobInvolvement = df.groupby('Department')['JobInvolvement'].mean().round(2)
+print("Average Job Involvement:")
+print(AVG_JobInvolvement)
+SQL:
+s7 = pd.read_sql_query("SELECT Department, ROUND(AVG(Age), 1) AS avg_age " \
+"FROM Employees GROUP BY Department;",conn)
+s7
+
+q8/
+Python:
+education_count = df.groupby('Department')['Education'].value_counts()
+print("education level:")
+print(education_count)
+SQL:
+s8 = pd.read_sql_query("SELECT Department, Education, COUNT(*) as count From Employees GROUP BY Department, Education;",conn)
+s8
